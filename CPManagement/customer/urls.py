@@ -1,6 +1,5 @@
 from django.conf.urls import url
 from .views import customer_view
-from dal import autocomplete
 from .models import Customer
 
 
