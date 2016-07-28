@@ -1,0 +1,15 @@
+{% extends 'template.html' %}
+{% load staticfiles%}
+
+{% block main %}
+    <div class="col-lg-8 col-lg-offset-2">
+        <h3> Поставщик: {{ object.provider }}</h3>
+        <h4> Регионы, в которых мы работаем: </h4>
+        <ul style="font-size: 20px;">
+            {% for r in object.region.all %}
+                <li style="list-style-type: none;">{{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

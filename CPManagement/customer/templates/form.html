@@ -1,0 +1,32 @@
+{% csrf_token %}
+{% for field in form.hidden_fields %}
+    {{ field }}
+{% endfor %}
+{% for field in form.visible_fields %}
+    <div class="form-group">
+        <div class="col-lg-10 col-lg-offset-1">
+            {% if field.errors|length > 0 %}
+                <div class="errors">
+                    {% for error in field.errors %}
+                        <p class="text-danger">{{ error }} </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="col-sm-6 col-sm-offset-2">
+                <div class="">{{ field.label }}</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-2">
+                    <div class="">{{ field }}</div>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="submit">ОК</button>
+                </div>
+            </div>
+
+            {% if field.help_text %}
+                <div class="help">{{ field.help_text }}</div>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

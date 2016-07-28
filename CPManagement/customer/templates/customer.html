@@ -1,0 +1,74 @@
+{% extends 'template.html' %}
+{% load staticfiles%}
+
+{% block main %}
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form id="customer-form" class="form-horizontal" action="{% url 'customer' %}" method="post">
+                    <legend> Выберите заказчика из списка: </legend>
+                    {% include 'form.html' %}
+                </form>
+            </div>
+        </div>
+        <h3> Cписок поставщиков: </h3>
+        <div id="providers"></div>
+    </div>
+
+    <script id="providers-ajax" type="text/x-jsrender">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                (?for providers ?)
+                <div class="row">
+                    <a class="btn btn-link" href="/provider/get/(?:id?)"> (?:provider?) </a>
+                </div>
+                <hr>
+                (?/for?)
+            </div>
+        </div>
+    </script>
+
+    <script type='text/javascript'>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+
+        $.views.settings.delimiters("(?","?)"); //jsrender delimiters: std delimeters are conflicted with django syntax
+        var providers_template = $.templates("#providers-ajax");
+
+        $("#customer-form").submit(function(event) {
+            event.preventDefault();
+
+            var $form = $( this ), url = $form.attr('action');
+
+            var posting = $.post( url, { customer: $('#id_customer').val() } );
+
+            posting.done(function(data) {
+                if (data.status == '200') {
+                    var htmlOutput = providers_template.render(data);
+                    $("#providers").html(htmlOutput);
+                    //$("#providers").html('2');
+                }
+                else {
+                    $("#providers").html('Неизвестная ошибка');
+                }
+            });
+        });
+    </script>
+{% endblock %}
